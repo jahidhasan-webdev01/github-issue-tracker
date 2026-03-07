@@ -1,41 +1,39 @@
-const getLabel = (lbs) => {
+const getLabelAndIcon = (lbs) => {
     if (lbs === "bug") {
-        return "text-red-600 bg-red-100 border-red-300";
+        return {
+            cls: "text-red-600 bg-red-100 border-red-300",
+            icon: "fa-solid fa-bug"
+        };
     }
     else if (lbs === "enhancement") {
-        return "text-green-600 bg-green-100 border-green-300";
+        return {
+            cls: "text-green-600 bg-green-100 border-green-300",
+            icon: "fa-solid fa-arrow-trend-up"
+        };
     }
     else if (lbs === "help wanted") {
-        return "text-yellow-600 bg-yellow-100 border-yellow-300";
+        return {
+            cls: "text-yellow-600 bg-yellow-100 border-yellow-300",
+            icon: "fa-solid fa-life-ring"
+        };
     }
     else if (lbs === "good first issue") {
-        return "text-blue-600 bg-blue-100 border-blue-300";
+        return {
+            cls: "text-blue-600 bg-blue-100 border-blue-300",
+            icon: "fa-solid fa-circle-exclamation"
+        };
     }
     else if (lbs === "documentation") {
-        return "text-pink-600 bg-pink-100 border-pink-300";
+        return {
+            cls: "text-pink-600 bg-pink-100 border-pink-300",
+            icon: "fa-regular fa-file-code"
+        };
     }
 
-    return "text-gray-600 bg-gray-100 border-gray-300";
-}
-
-const getIcon = (lbs) => {
-    if (lbs === "bug") {
-        return "fa-solid fa-bug";
-    }
-    else if (lbs === "enhancement") {
-        return "fa-solid fa-arrow-trend-up";
-    }
-    else if (lbs === "help wanted") {
-        return "fa-solid fa-life-ring";
-    }
-    else if (lbs === "good first issue") {
-        return "fa-solid fa-circle-exclamation";
-    }
-    else if (lbs === "documentation") {
-        return "fa-regular fa-file-code";
-    }
-
-    return "fa-regular fa-file-code";
+    return {
+        cls: "text-gray-600 bg-gray-100 border-gray-300",
+        icon: "fa-regular fa-file-code"
+    };
 }
 
 const loadData = async (selectedTab) => {
@@ -98,8 +96,8 @@ const displayData = (data) => {
                             ${issue?.labels.map((lbl) => {
             return `
                                 <p class="flex items-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
-                                ${getLabel(lbl)}">
-                                <i class="${getIcon(lbl)}"></i>
+                                ${getLabelAndIcon(lbl).cls}">
+                                <i class="${getLabelAndIcon(lbl).icon}"></i>
                                 ${lbl.toUpperCase()}
                                 </p>
                              `
@@ -162,8 +160,8 @@ const showDetailModal = (data) => {
                 ${data.labels.map((lbl) => {
         return `
                 <p class="flex items-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
-                                ${getLabel(lbl)}">
-                                <i class="${getIcon(lbl)}"></i>
+                                ${getLabelAndIcon(lbl).cls}">
+                                <i class="${getLabelAndIcon(lbl).icon}"></i>
                     ${lbl.toUpperCase()}
                 </p>
                 `
