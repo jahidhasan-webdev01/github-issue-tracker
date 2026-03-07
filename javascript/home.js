@@ -1,10 +1,10 @@
-const getLabel = (lbs)=> {
+const getLabel = (lbs) => {
     if (lbs === "bug") {
         return "text-red-600 bg-red-100 border-red-300";
-    } 
+    }
     else if (lbs === "enhancement") {
         return "text-green-600 bg-green-100 border-green-300";
-    } 
+    }
     else if (lbs === "help wanted") {
         return "text-yellow-600 bg-yellow-100 border-yellow-300";
     }
@@ -59,7 +59,6 @@ const displayData = (data) => {
     cardContainer.innerHTML = "";
 
     data.forEach((issue) => {
-        console.log("ISSUE:", issue.labels);
         const cardEl = document.createElement("div");
         cardEl.className = `bg-white py-8 shadow rounded-lg border-t-5 ${issue.status === "open" ? "border-green-700" : issue.status === "closed" ? "border-purple-700" : ""}`;
 
@@ -96,6 +95,25 @@ const displayData = (data) => {
 
     isLoading(false)
 };
+
+const handleSearch = async () => {
+    isLoading(true);
+    const searchInputValue = document.getElementById("search-input").value.trim().toLowerCase();
+
+    if (!searchInputValue) {
+        return;
+    };
+
+    const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchInputValue}`;
+
+    console.log(url);
+
+    const result = await fetch(url);
+    const data = await result.json();
+
+    displayData(data.data)
+
+}
 
 const isLoading = (status) => {
     if (status) {
