@@ -97,11 +97,11 @@ const displayData = (data) => {
                         <div class="flex flex-wrap gap-1">
                             ${issue?.labels.map((lbl) => {
             return `
-                                <p class="flex items-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
+                                <div class="flex items-center justify-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
                                 ${getLabelAndIcon(lbl).cls}">
-                                <i class="${getLabelAndIcon(lbl).icon}"></i>
-                                ${lbl.toUpperCase()}
-                                </p>
+                                    <i class="${getLabelAndIcon(lbl).icon}"></i>
+                                    <p>${lbl.toUpperCase()}</p>
+                                </div>
                              `
         }).join("")}
                         </div>      
@@ -118,6 +118,13 @@ const displayData = (data) => {
     isLoading(false)
 };
 
+document.getElementById("search-input").addEventListener("keydown", (event) => {
+    // only search when press on Enter
+    if (event.key === "Enter") {
+        handleSearch();
+    }
+})
+
 const handleSearch = async () => {
     isLoading(true);
     const searchInputValue = document.getElementById("search-input").value.trim().toLowerCase();
@@ -127,8 +134,6 @@ const handleSearch = async () => {
     };
 
     const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchInputValue}`;
-
-    console.log(url);
 
     const result = await fetch(url);
     const data = await result.json();
