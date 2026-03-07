@@ -61,6 +61,7 @@ const displayData = (data) => {
     data.forEach((issue) => {
         const cardEl = document.createElement("div");
         cardEl.className = `bg-white py-8 shadow rounded-lg border-t-5 ${issue.status === "open" ? "border-green-700" : issue.status === "closed" ? "border-purple-700" : ""}`;
+        cardEl.onclick = () => loadModalData(issue.id);
 
         cardEl.innerHTML = `
                     <div class="px-3 space-y-5 border-b border-gray-300 pb-5">
@@ -75,13 +76,13 @@ const displayData = (data) => {
 
                         <div class="flex flex-wrap gap-1">
                             ${issue?.labels.map((lbl) => {
-                            return `
+            return `
                                 <p class="flex items-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
                                 ${getLabel(lbl)}">
                                 ${lbl.toUpperCase()}
                                 </p>
                              `
-                            }).join("")}
+        }).join("")}
                         </div>      
                     </div>
 
@@ -113,6 +114,62 @@ const handleSearch = async () => {
 
     displayData(data.data)
 
+}
+
+const loadModalData = async (id) => {
+    isLoading(true);
+    const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`;
+
+    const result = await fetch(url);
+    const data = await result.json();
+
+    showDetailModal(data?.data)
+}
+
+const showDetailModal = (data) => {
+    const modalContainer = document.getElementById("issue_detail_modal");
+    modalContainer.innerHTML = `
+     <div class="modal-box space-y-3">
+            <h1 class="text-lg font-bold">${data.title}</h1>
+            <div class="flex items-center gap-2 text-xs">
+                <p class="text-xs px-4 py-1 rounded-4xl font-semibold text-white ${data.status === "open" ? "bg-green-600" : "bg-purple-600"}">${data.status}</p>
+                <span class="w-2 h-2 rounded-full bg-gray-600"></span>
+                <p>Opened by ${data.assignee ? data.assignee : "unknown"}</p>
+                <span class="w-2 h-2 rounded-full bg-gray-600"></span>
+                <p>${new Date(data?.updatedAt).toLocaleDateString("en-US")}</p>
+            </div>
+            <div class="flex flex-wrap gap-1">
+                ${data.labels.map((lbl) => {
+                return `
+                <p class="flex items-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
+                                ${getLabel(lbl)}">
+                    ${lbl.toUpperCase()}
+                </p>
+                `
+                }).join("")} 
+                </p>
+            </div>
+            <p class="text-sm text-gray-600">${data.description}</p>
+
+            <div class="grid grid-cols-2 py-5 px-4 bg-gray-100 rounded mt-5">
+                <div>
+                    <h2 class="text-sm">Assignee:</h2>
+                    <h2 class="text-sm font-bold ">${data.assignee ? data.assignee : "unknown"}</h2>
+                </div>
+                <div>
+                    <h2 class="text-sm">Priority:</h2>
+                    <p class="inline-block text-xs px-4 py-0.5 rounded-4xl ${data.priority === "high" ? "text-red-900 bg-red-200" : data.priority === "medium" ? "text-yellow-900 bg-yellow-200" : "text-purple-900 bg-purple-200"}">${data.priority.toUpperCase()}</p>
+                </div>
+            </div>
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn btn-primary">Close</button>
+                </form>
+            </div>
+        </div>
+        `
+    isLoading(false);
+    modalContainer.showModal();
 }
 
 const isLoading = (status) => {
