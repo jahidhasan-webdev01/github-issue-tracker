@@ -18,6 +18,26 @@ const getLabel = (lbs) => {
     return "text-gray-600 bg-gray-100 border-gray-300";
 }
 
+const getIcon = (lbs) => {
+    if (lbs === "bug") {
+        return "fa-solid fa-bug";
+    }
+    else if (lbs === "enhancement") {
+        return "fa-solid fa-arrow-trend-up";
+    }
+    else if (lbs === "help wanted") {
+        return "fa-solid fa-life-ring";
+    }
+    else if (lbs === "good first issue") {
+        return "fa-solid fa-circle-exclamation";
+    }
+    else if (lbs === "documentation") {
+        return "fa-regular fa-file-code";
+    }
+
+    return "fa-regular fa-file-code";
+}
+
 const loadData = async (selectedTab) => {
     isLoading(true);
 
@@ -60,7 +80,7 @@ const displayData = (data) => {
 
     data.forEach((issue) => {
         const cardEl = document.createElement("div");
-        cardEl.className = `bg-white py-8 shadow rounded-lg border-t-5 ${issue.status === "open" ? "border-green-700" : issue.status === "closed" ? "border-purple-700" : ""}`;
+        cardEl.className = `bg-white py-8 shadow rounded-lg border-t-5 cursor-pointer ${issue.status === "open" ? "border-green-700" : issue.status === "closed" ? "border-purple-700" : ""}`;
         cardEl.onclick = () => loadModalData(issue.id);
 
         cardEl.innerHTML = `
@@ -79,6 +99,7 @@ const displayData = (data) => {
             return `
                                 <p class="flex items-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
                                 ${getLabel(lbl)}">
+                                <i class="${getIcon(lbl)}"></i>
                                 ${lbl.toUpperCase()}
                                 </p>
                              `
@@ -117,7 +138,6 @@ const handleSearch = async () => {
 }
 
 const loadModalData = async (id) => {
-    isLoading(true);
     const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`;
 
     const result = await fetch(url);
@@ -140,13 +160,14 @@ const showDetailModal = (data) => {
             </div>
             <div class="flex flex-wrap gap-1">
                 ${data.labels.map((lbl) => {
-                return `
+        return `
                 <p class="flex items-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
                                 ${getLabel(lbl)}">
+                                <i class="${getIcon(lbl)}"></i>
                     ${lbl.toUpperCase()}
                 </p>
                 `
-                }).join("")} 
+    }).join("")} 
                 </p>
             </div>
             <p class="text-sm text-gray-600">${data.description}</p>
@@ -168,7 +189,7 @@ const showDetailModal = (data) => {
             </div>
         </div>
         `
-    isLoading(false);
+
     modalContainer.showModal();
 }
 

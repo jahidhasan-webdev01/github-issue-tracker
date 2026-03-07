@@ -12,5 +12,4 @@ const handleLogin = () => {
     } else {
         document.getElementById("invalide-credentials").classList.remove("hidden");
     }
-
 }
