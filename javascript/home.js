@@ -1,3 +1,23 @@
+const getLabel = (lbs)=> {
+    if (lbs === "bug") {
+        return "text-red-600 bg-red-100 border-red-300";
+    } 
+    else if (lbs === "enhancement") {
+        return "text-green-600 bg-green-100 border-green-300";
+    } 
+    else if (lbs === "help wanted") {
+        return "text-yellow-600 bg-yellow-100 border-yellow-300";
+    }
+    else if (lbs === "good first issue") {
+        return "text-blue-600 bg-blue-100 border-blue-300";
+    }
+    else if (lbs === "documentation") {
+        return "text-pink-600 bg-pink-100 border-pink-300";
+    }
+
+    return "text-gray-600 bg-gray-100 border-gray-300";
+}
+
 const loadData = async (selectedTab) => {
     isLoading(true);
 
@@ -39,6 +59,7 @@ const displayData = (data) => {
     cardContainer.innerHTML = "";
 
     data.forEach((issue) => {
+        console.log("ISSUE:", issue.labels);
         const cardEl = document.createElement("div");
         cardEl.className = `bg-white py-8 shadow rounded-lg border-t-5 ${issue.status === "open" ? "border-green-700" : issue.status === "closed" ? "border-purple-700" : ""}`;
 
@@ -54,11 +75,15 @@ const displayData = (data) => {
                         </div>
 
                         <div class="flex flex-wrap gap-1">
-                                ${issue?.labels.map((lbl) => {
-            return `<p class="flex items-center gap-1 text-red-600 bg-red-100 border-2 border-red-300 text-xs px-3 py-1 rounded-2xl">
-                                    ${lbl}
-                                </p>`}).join("")}
-                        </div>
+                            ${issue?.labels.map((lbl) => {
+                            return `
+                                <p class="flex items-center gap-1 border-2 text-xs px-3 py-1 rounded-2xl 
+                                ${getLabel(lbl)}">
+                                ${lbl.toUpperCase()}
+                                </p>
+                             `
+                            }).join("")}
+                        </div>      
                     </div>
 
                     <div class="px-3 pt-5 space-y-1 text-gray-600 text-sm">
@@ -81,8 +106,5 @@ const isLoading = (status) => {
         document.getElementById("loading-container").classList.add("hidden")
     }
 }
-
-// isLoading(false);
-
 
 loadData("all")
