@@ -77,7 +77,6 @@ const displayData = (data) => {
     cardContainer.innerHTML = "";
 
     data.forEach((issue) => {
-        console.log(issue.status === "open");
         const cardEl = document.createElement("div");
         cardEl.className = `bg-white py-8 shadow rounded-lg border-t-5 cursor-pointer ${issue.status === "open" ? "border-green-700" : issue.status === "closed" ? "border-purple-700" : ""}`;
         cardEl.onclick = () => loadModalData(issue.id);
@@ -85,7 +84,7 @@ const displayData = (data) => {
         cardEl.innerHTML = `
                     <div class="px-3 space-y-5 border-b border-gray-300 pb-5">
                         <div class="flex items-center justify-between">
-                            <img src="./${issue.status === "open" ? "open-status.png" : "closed-status.png"}" alt="${issue.status}">
+                            <img src="./assets/${issue.status === "open" ? "open-status" : "closed-status"}.png" alt="${issue.status}">
                         
                             <p class="text-xs ${issue.priority === "high" ? "text-red-600 bg-red-100" : issue.priority === "medium" ? "text-yellow-600 bg-yellow-100" : "text-purple-600 bg-purple-100"} px-4 py-1 rounded-4xl font-semibold">${issue?.priority.toUpperCase()}</p>
                         </div>
