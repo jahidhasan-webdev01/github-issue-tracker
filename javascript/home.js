@@ -1,3 +1,5 @@
+let currentTab = "";
+
 const getLabelAndIcon = (lbs) => {
     if (lbs === "bug") {
         return {
@@ -34,7 +36,7 @@ const getLabelAndIcon = (lbs) => {
         cls: "text-gray-600 bg-gray-100 border-gray-300",
         icon: "fa-regular fa-file-code"
     };
-}
+};
 
 const loadData = async (selectedTab = "all") => {
     isLoading(true);
@@ -52,6 +54,7 @@ const loadData = async (selectedTab = "all") => {
         issues = issues.filter((issue) => issue.status === selectedTab);;
     }
 
+    currentTab = selectedTab;
     displayData(issues);
 };
 
@@ -60,7 +63,7 @@ const makeAllBtnInactive = () => {
     btns.forEach((btn) => {
         document.getElementById(`${btn}`).classList.remove("btn-primary");
     })
-}
+};
 
 const displayData = (data) => {
     document.getElementById("issue-count").innerText = `${data?.length}`
@@ -109,12 +112,21 @@ const displayData = (data) => {
     isLoading(false)
 };
 
-document.getElementById("search-input").addEventListener("keydown", (event) => {
-    // only search when press on Enter
+const searchInput = document.getElementById("search-input");
+
+searchInput.addEventListener("input", () => {
+    // If input are clear, then back to previous active tab
+    if (searchInput.value.trim() === "") {
+        loadData(currentTab);
+    }
+});
+
+searchInput.addEventListener("keyup", (event) => {
+    // Only search when press on Enter
     if (event.key === "Enter") {
         handleSearch();
     }
-})
+});
 
 const handleSearch = async () => {
     isLoading(true);
@@ -126,7 +138,7 @@ const handleSearch = async () => {
     };
 
     makeAllBtnInactive();
-    
+
     const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchInputValue}`;
 
     const result = await fetch(url);
@@ -148,8 +160,8 @@ const handleSearch = async () => {
         return;
     }
 
-    displayData(issues)
-}
+    displayData(issues);
+};
 
 const loadModalData = async (id) => {
     const modalContainer = document.getElementById("issue_detail_modal");
@@ -169,7 +181,7 @@ const loadModalData = async (id) => {
     const data = await result.json();
 
     showDetailModal(data?.data)
-}
+};
 
 const showDetailModal = (data) => {
     const modalContainer = document.getElementById("issue_detail_modal");
@@ -216,7 +228,7 @@ const showDetailModal = (data) => {
         `
 
     // modalContainer.showModal();
-}
+};
 
 const isLoading = (status) => {
     if (status) {
@@ -226,6 +238,6 @@ const isLoading = (status) => {
         document.getElementById("issues-container").classList.remove("hidden")
         document.getElementById("loading-container").classList.add("hidden")
     }
-}
+};
 
-loadData()
+loadData();
