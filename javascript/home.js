@@ -125,6 +125,8 @@ const handleSearch = async () => {
         return;
     };
 
+    makeAllBtnInactive();
+    
     const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchInputValue}`;
 
     const result = await fetch(url);
@@ -135,8 +137,8 @@ const handleSearch = async () => {
     if (!issues || issues.length === 0) {
         const cardContainer = document.getElementById("card-container");
         cardContainer.innerHTML = `
-            <div class="col-span-full flex items-center justify-center py-20">
-                <p class="text-gray-600 text-sm font-semibold">
+            <div class="col-span-full flex items-center justify-center py-40">
+                <p class="text-red-600 text-sm font-semibold">
                     No issues found!
                 </p>
             </div>
