@@ -36,33 +36,24 @@ const getLabelAndIcon = (lbs) => {
     };
 }
 
-const loadData = async (selectedTab) => {
+const loadData = async (selectedTab = "all") => {
     isLoading(true);
+    makeAllBtnInactive();
+    document.getElementById(`btn-${selectedTab}`).classList.add("btn-primary");
 
     const url = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 
     const result = await fetch(url);
-    const data = await result.json();
+    const jsonData = await result.json();
 
+    let issues = jsonData?.data;
 
-    if (selectedTab === "all") {
-        makeAllBtnInactive();
-        document.getElementById("btn-all").classList.add("btn-primary");
-        displayData(data?.data);
-    } else if (selectedTab === "open") {
-        const openIssueData = data?.data.filter((issue) => issue.status === "open");
-
-        makeAllBtnInactive();
-        document.getElementById("btn-open").classList.add("btn-primary");
-        displayData(openIssueData);
-    } else if (selectedTab === "closed") {
-        const openIssueData = data?.data.filter((issue) => issue.status === "closed");
-
-        makeAllBtnInactive();
-        document.getElementById("btn-closed").classList.add("btn-primary");
-        displayData(openIssueData);
+    if (selectedTab !== "all") {
+        issues = issues.filter((issue) => issue.status === selectedTab);;
     }
-}
+
+    displayData(issues);
+};
 
 const makeAllBtnInactive = () => {
     const btns = ["btn-all", "btn-open", "btn-closed"];
@@ -130,6 +121,7 @@ const handleSearch = async () => {
     const searchInputValue = document.getElementById("search-input").value.trim().toLowerCase();
 
     if (!searchInputValue) {
+        isLoading(false);
         return;
     };
 
@@ -138,11 +130,37 @@ const handleSearch = async () => {
     const result = await fetch(url);
     const data = await result.json();
 
-    displayData(data.data)
+    const issues = data?.data;
 
+    if (!issues || issues.length === 0) {
+        const cardContainer = document.getElementById("card-container");
+        cardContainer.innerHTML = `
+            <div class="col-span-full flex items-center justify-center py-20">
+                <p class="text-gray-600 text-sm font-semibold">
+                    No issues found!
+                </p>
+            </div>
+        `;
+        document.getElementById("issue-count").innerText = "0";
+        isLoading(false);
+        return;
+    }
+
+    displayData(issues)
 }
 
 const loadModalData = async (id) => {
+    const modalContainer = document.getElementById("issue_detail_modal");
+
+    // show modal with loading spinner first
+    modalContainer.innerHTML = `
+        <div class="modal-box min-h-[30vh] flex items-center justify-center py-20">
+            <span class="loading loading-spinner loading-xl"></span>
+        </div>
+    `;
+
+    modalContainer.showModal();
+
     const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`;
 
     const result = await fetch(url);
@@ -159,7 +177,7 @@ const showDetailModal = (data) => {
             <div class="flex items-center gap-2 text-xs">
                 <p class="text-xs px-4 py-1 rounded-4xl font-semibold text-white ${data.status === "open" ? "bg-green-600" : "bg-purple-600"}">${data.status}</p>
                 <span class="w-2 h-2 rounded-full bg-gray-600"></span>
-                <p>Opened by ${data.assignee ? data.assignee : "unknown"}</p>
+                <p>Opened by ${data.author}</p>
                 <span class="w-2 h-2 rounded-full bg-gray-600"></span>
                 <p>${new Date(data?.updatedAt).toLocaleDateString("en-US")}</p>
             </div>
@@ -195,7 +213,7 @@ const showDetailModal = (data) => {
         </div>
         `
 
-    modalContainer.showModal();
+    // modalContainer.showModal();
 }
 
 const isLoading = (status) => {
@@ -208,4 +226,4 @@ const isLoading = (status) => {
     }
 }
 
-loadData("all")
+loadData()
