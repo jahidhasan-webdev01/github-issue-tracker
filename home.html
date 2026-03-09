@@ -33,14 +33,14 @@
 <body class="bg-gray-100">
     <!-- Navigation bar -->
     <header class="bg-white border-b border-gray-200 pb-2">
-        <div class="w-full px-3 md:w-11/12 mx-auto flex justify-between my-3 gap-5">
-            <div class="flex flex-col md:flex-row items-start md:items-center gap-2 cursor-pointer">
+        <div class="w-full px-3 md:w-11/12 mx-auto flex flex-col md:flex-row justify-between my-2 md:my-3 gap-2 md:gap-5">
+            <div class="flex md:flex-row items-center justify-center gap-2 cursor-pointer">
                 <img class="w-6 md:w-8" src="./assets/github-logo.png" alt="GitHub">
                 <h1 class="font-bold text-sm text-left">GitHub Issues Tracker</h1>
             </div>
 
-            <div class="flex items-center gap-1">
-                <label class="input input-sm">
+            <div class="flex items-center justify-center gap-1">
+                <label class="input input-xs md:input-sm">
                     <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none"
                             stroke="currentColor">
@@ -50,7 +50,7 @@
                     </svg>
                     <input id="search-input" type="search" placeholder="Search issues..." />
                 </label>
-                <button class="btn btn-sm btn-primary">+ New Issue</button>
+                <button class="btn btn-xs md:btn-sm btn-primary">+ New Issue</button>
             </div>
         </div>
     </header>
